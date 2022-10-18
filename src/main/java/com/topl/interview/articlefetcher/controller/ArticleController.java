@@ -24,7 +24,6 @@ public class ArticleController {
     @Value("${apiKey}")
     String key;
 
-    private String apiKey = "a66e9331ef8c088039d4073dfb226e13";
     private String uri = "https://gnews.io/api/v4/search?&q=";
     private String staticTokenString = "&token=";
 
@@ -61,7 +60,14 @@ public class ArticleController {
         if (response == null)
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(response.getArticles(), HttpStatus.OK);
+        List<Article> articles = response.getArticles();
+        for (Article article : articles) {
+            ArticleData articleData = new ArticleData();
+            articleData.setWordCountMap(article.wordCountMap());
+            articleData.setTotalWords(article.contentLength());
+            article.setMetaData(articleData);
+        }
+        return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
     @GetMapping("/article/{searchText}/author/{authorName}")
@@ -76,14 +82,21 @@ public class ArticleController {
         if (response == null)
             return new ResponseEntity<>(new Object[0], HttpStatus.BAD_REQUEST);
 
+        List<Article> articles = response.getArticles();
+        for (Article article : articles) {
+            ArticleData articleData = new ArticleData();
+            articleData.setWordCountMap(article.wordCountMap());
+            articleData.setTotalWords(article.contentLength());
+            article.setMetaData(articleData);
+        }
+        
         Predicate<Article> byAuthor = article -> article.getSource().getName().equals(authorName);
-        return new ResponseEntity<>(response.getArticles().stream().filter(byAuthor).toArray(), HttpStatus.OK);
+
+        return new ResponseEntity<>(articles.stream().filter(byAuthor).toArray(), HttpStatus.OK);
     }
 
     @GetMapping("/test")
     public ResponseEntity<List<Article>> alternateSearchText() {
-        System.out.println(key);
-        System.out.println(key.equals(apiKey));
         ArrayList<Source> sources = new ArrayList<>();
         sources.add(new Source("test author", "https://www.example.com"));
         sources.add(new Source("test author 2", "https://www.example.com"));
