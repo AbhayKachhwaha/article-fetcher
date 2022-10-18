@@ -1,6 +1,6 @@
 package com.topl.interview.articlefetcher.models;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -129,7 +129,7 @@ public class Article {
 
     public Map<String, Integer> wordCountMap() {
         String[] arrayOfWords = this.content.split(" ");
-        Map<String, Integer> map = new Hashtable<>();
+        Map<String, Integer> map = new HashMap<>();
 
         for (int i = 0; i < arrayOfWords.length; i++) {
             if (map.containsKey(arrayOfWords[i])) {
