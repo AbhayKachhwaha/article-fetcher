@@ -31,7 +31,7 @@ public class ArticleController {
     @Cacheable(value = "#searchText", key = "#searchText")
     public ResponseEntity<List<Article>> getArticles(@PathVariable String searchText) {
         uri = uri.concat(searchText).concat(staticTokenString).concat(key);
-        System.out.println(uri);
+        // System.out.println(uri);
         RestTemplate restTemplate = new RestTemplate();
         Response response = restTemplate.getForObject(uri, Response.class);
 
